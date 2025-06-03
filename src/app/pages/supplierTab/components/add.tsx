@@ -274,7 +274,7 @@ export function AddButton({ setSupplier } : { setSupplier : React.Dispatch<React
 
         <SheetFooter>
           <Button type="button" onClick={handleSave}>
-            Save changes
+            Submit
           </Button>
           <SheetClose asChild>
             <Button variant="outline">Close</Button>

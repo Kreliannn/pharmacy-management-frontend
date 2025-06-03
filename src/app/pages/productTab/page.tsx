@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query"
 import { backendUrl } from "@/app/utils/url"
 import { getProductInterface } from "@/app/types/product.type"
 import axios from "axios"
+import { EditButton } from "./components/editButton"
 
 export default function SupplierTab() {
 
@@ -54,6 +55,7 @@ export default function SupplierTab() {
                             <TableHead>cost</TableHead>
                             <TableHead>price</TableHead>
                             <TableHead>quantity</TableHead>
+                            <TableHead>Edit</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -68,6 +70,9 @@ export default function SupplierTab() {
                                         <TableCell> {item.cost}</TableCell>
                                         <TableCell> {item.price}</TableCell>
                                         <TableCell> {item.quantity}</TableCell>
+                                        <TableCell> 
+                                            <EditButton setProduct={setProduct} product={item} />
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             }
