@@ -1,4 +1,5 @@
-import { useState } from "react"
+"use client"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -24,13 +25,14 @@ import {
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { backendUrl } from "@/app/utils/url"
-import { supplierInterface } from "@/app/types/supplier.type"
+import { supplierInterface , getSupplierInterface} from "@/app/types/supplier.type"
 import { successAlert , errorAlert} from "@/app/utils/alert"
+import { getProductInterface } from "@/app/types/product.type"
+import { useQuery } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query";
 
 
-
-
-export function AddButton() {
+export function AddButton({ setSupplier } : { setSupplier : React.Dispatch<React.SetStateAction<getSupplierInterface[]>> }) {
   const [ProductName, setProductName] = useState("")
   const [description, setDescription] = useState("")
   const [type, setType] = useState("")
@@ -42,11 +44,48 @@ export function AddButton() {
   const [supplierName, setSupplierName] = useState("")
   const [receivedBy, setReceivedBy] = useState("")
 
+  const [disable, setDisable] = useState(false)
+
+  const [product, setProduct] = useState<getProductInterface[]>([])
+
+  const queryClient = useQueryClient();
+
+
+    const { data } = useQuery({
+        queryKey : ["product"],
+        queryFn : () => axios.get(backendUrl("product"))
+    })
+
+    useEffect(() => {
+        if(data?.data)
+        {
+            setProduct(data?.data)
+        }
+    }, [data])
+
+    const clearFormFields = () => {
+      setProductName("");
+      setDescription("");
+      setType("");
+      setCost("");
+      setQuantity("");
+      setOrderedDate("");
+      setOrderedReceived(new Date().toISOString().split("T")[0]);
+      setExpirydDate("");
+      setSupplierName("");
+      setReceivedBy("");
+    };
+    
+
+
 
   const mutation = useMutation({
     mutationFn : (data : supplierInterface ) => axios.post(backendUrl("supplier"), { supplier : data}),
-    onSuccess : (res) => {
-      successAlert(res.data)
+    onSuccess : (res : { data : getSupplierInterface[]}) => {
+      successAlert("data created")
+      setSupplier(res.data)
+      queryClient.invalidateQueries({ queryKey: ["product"] });
+      clearFormFields()
     },
     onError : (err) => {
       errorAlert("error")
@@ -72,6 +111,30 @@ export function AddButton() {
     mutation.mutate(supplierData)
   }
 
+  const handleSelectChange = (selected : string) => {
+    if(selected == "none")
+    {
+      setDisable(false)
+      setDescription("")
+      setProductName("")
+      setCost("")
+      setType("")
+      return
+    }
+
+    product.map((item) => {
+      if(selected == item.productName)
+      {
+        setDisable(true)
+        setProductName(item.productName)
+        setDescription(item.description)
+        setCost(item.cost.toString())
+        setType(item.type)
+      }
+    })
+    
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -87,18 +150,19 @@ export function AddButton() {
           {/* Select Existing Product */}
           <div>
             <label className="block mb-1">Select Existing Product</label>
-            <Select>
+            <Select onValueChange={handleSelectChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select Existing Product" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Existing Product</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
+                  <SelectItem value={"none"}>  none  </SelectItem>
+                  {
+                    product.map((item : getProductInterface) => (
+                      <SelectItem value={item.productName} key={item.productName}> {item.productName} </SelectItem>
+                    ))
+                  }
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -107,6 +171,7 @@ export function AddButton() {
           <div>
             <label className="block mb-1">Product Name</label>
             <Input
+              
               className="w-full"
               placeholder="Product Name"
               value={ProductName}
@@ -117,6 +182,7 @@ export function AddButton() {
           <div>
             <label className="block mb-1">Product Description</label>
             <Textarea
+              
               placeholder="Product Description..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}

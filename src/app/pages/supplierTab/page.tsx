@@ -41,7 +41,7 @@ export default function SupplierTab() {
             <Navbar />
 
             <div className="m-auto w-5/6 h-[70px]rounded-md flex gap-5 mb-5 items-center">
-                <AddButton />
+                <AddButton setSupplier={setSupplier} />
             </div>
 
             <div className="m-auto w-5/6 h-[600px] shadow-md rounded-md ">

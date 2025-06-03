@@ -11,9 +11,28 @@ import {
 import Link from "next/link"
 import Navbar from "@/components/ui/navbar"
 import { Button } from "@/components/ui/button"
-
+import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { backendUrl } from "@/app/utils/url"
+import { getProductInterface } from "@/app/types/product.type"
+import axios from "axios"
 
 export default function SupplierTab() {
+
+    const [product, setProduct] = useState<getProductInterface[]>([])
+
+    const { data } = useQuery({
+        queryKey : ["product"],
+        queryFn : () => axios.get(backendUrl("product"))
+    })
+
+    useEffect(() => {
+        if(data?.data)
+        {
+            setProduct(data?.data)
+        }
+    }, [data])
+
     return (
         <div className=" w-full h-dvh overflow-auto"> 
 
@@ -38,12 +57,23 @@ export default function SupplierTab() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            
+                         
+                        {
+                                product.map((item : getProductInterface, index : number) => (
+                                    <TableRow key={index}>
+                                        <TableCell> {item.productName }</TableCell>
+                                        <TableCell> {item.description}</TableCell>
+                                        <TableCell> {item.type}</TableCell>
+                                        <TableCell> {item.category}</TableCell>
+                                        <TableCell> {item.cost}</TableCell>
+                                        <TableCell> {item.price}</TableCell>
+                                        <TableCell> {item.quantity}</TableCell>
+                                    </TableRow>
+                                ))
+                            }
 
 
-
-                        </TableRow>
+                       
                     </TableBody>
                 </Table>
             </div>
