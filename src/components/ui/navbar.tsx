@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Navbar() {
   return (
     <nav className="w-full bg-blue-100 shadow-sm p-4 mb-5">
-      <div className="max-w-7xl mx-auto flex justify-end gap-6">
+      <div className="max-w-7xl mx-auto flex justify-end gap-10">
         <Link
           href="/pages/supplierTab"
           className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
@@ -23,7 +23,7 @@ export default function Navbar() {
           Sales Transaction
         </Link>
         <Link
-          href="/pages/inventory"
+          href="/pages/inventoryTab"
           className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
         >
           Inventory
