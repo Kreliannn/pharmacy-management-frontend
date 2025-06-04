@@ -57,6 +57,13 @@ export default function Navbar() {
       </Link>
 
       <Link
+        href="/pages/reportTab"
+        className="text-white hover:text-purple-200 transition-colors font-medium"
+      >
+        Report
+      </Link>
+
+      <Link
         href="/"
         className="text-red-200 hover:text-white transition-colors font-semibold"
       >
