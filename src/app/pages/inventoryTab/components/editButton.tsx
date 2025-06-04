@@ -32,23 +32,20 @@ import { useQuery } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query";
 
 
-export function EditButton({ setProduct, product } : { product : getProductInterface, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
+export function EditButton({ setProduct , setValue } : { setValue : (c : number, h : number) => void, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
   
-  const [year2022, setYear2022] = useState("")
-  const [year2023, setYear2023] = useState("")
-  const [year2024, setYear2024] = useState("")
-
+  const [carryingCost, setCarryingCost] = useState("")
+  const [holdingCost, setHoldingCost] = useState("")
+  
 
 
     const clearFormFields = () => {
-        setYear2022("");
-        setYear2023("");
-        setYear2024("");
+    
     };
     
-
-  const mutation = useMutation({
-    mutationFn : (data : { year2022 : number, year2023 : number, year2024 : number, _id : string} ) => axios.patch(backendUrl("product/demandPage"), { product : data}),
+    {/* 
+       const mutation = useMutation({
+    mutationFn : (data : { carryingCost : number, HoldingCost : number, year2024 : number, _id : string} ) => axios.patch(backendUrl("product/demandPage"), { product : data}),
     onSuccess : (res : { data : getProductInterface[]}) => {
       successAlert("data updated")
       setProduct(res.data)
@@ -58,16 +55,14 @@ export function EditButton({ setProduct, product } : { product : getProductInter
       errorAlert("error")
     }
   })
+      
+      */}
+ 
 
   const handleSave = () => {
-    const data = {
-        _id : product._id,
-        year2022 : Number(year2022),
-        year2023 : Number(year2023),
-        year2024 : Number(year2024)
-    }
-
-    mutation.mutate(data)
+    if(!carryingCost || !holdingCost) return errorAlert("empty field")
+    setValue(Number(carryingCost), Number(holdingCost))
+    successAlert("updated")
   }
 
 
@@ -78,7 +73,7 @@ export function EditButton({ setProduct, product } : { product : getProductInter
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit {product.productName} information</SheetTitle>
+          <SheetTitle>Edit  information</SheetTitle>
           <SheetDescription>Input product information</SheetDescription>
         </SheetHeader>
 
@@ -86,13 +81,13 @@ export function EditButton({ setProduct, product } : { product : getProductInter
        
 
           <div>
-            <label className="block mb-1">year 2022</label>
+            <label className="block mb-1">Carrying Cost</label>
             <Input
               
               className="w-full"
-              placeholder="year 2022"
-              value={year2022}
-              onChange={(e) => setYear2022(e.target.value)}
+              placeholder="Carrying Cost"
+              value={carryingCost}
+              onChange={(e) => setCarryingCost(e.target.value)}
             />
           </div>
 
@@ -103,30 +98,17 @@ export function EditButton({ setProduct, product } : { product : getProductInter
               
               className="w-full"
               placeholder="year 2023"
-              value={year2023}
-              onChange={(e) => setYear2023(e.target.value)}
+              value={holdingCost}
+              onChange={(e) => setHoldingCost(e.target.value)}
             />
           </div>
-
-
-          <div>
-            <label className="block mb-1">year 2024</label>
-            <Input
-              
-              className="w-full"
-              placeholder="year 2024"
-              value={year2024}
-              onChange={(e) => setYear2024(e.target.value)}
-            />
-          </div>
-
 
           
         </div>
 
         <SheetFooter>
           <Button type="button" onClick={handleSave}>
-            Update Product
+            Submit
           </Button>
           <SheetClose asChild>
             <Button variant="outline">Close</Button>

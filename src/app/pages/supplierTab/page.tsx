@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getSupplierInterface } from "@/app/types/supplier.type"
 import { backendUrl } from "@/app/utils/url"
 import axios from "axios"
+import PriorityTab from "@/components/ui/priorityTab"
 
 export default function SupplierTab() {
 
@@ -44,47 +45,56 @@ export default function SupplierTab() {
                 <AddButton setSupplier={setSupplier} />
             </div>
 
-            <div className="m-auto w-5/6 h-[600px] shadow-md rounded-md ">
-                <Table>
-                    <TableCaption>A list of your recent invoices.</TableCaption>
-                    <TableHeader className="">
-                        <TableRow>
-                            <TableHead>medicine name</TableHead>
-                            <TableHead>description</TableHead>
-                            <TableHead>type</TableHead>
-                            <TableHead>cost per piece</TableHead>
-                            <TableHead>quantity</TableHead>
-                            <TableHead>total cost</TableHead>
-                            <TableHead>date ordered</TableHead>
-                            <TableHead>received</TableHead>
-                            <TableHead>expiry date</TableHead>
-                            <TableHead>supplier name</TableHead>
-                            <TableHead>received by</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                       
-                            {
-                                supplier.map((item : getSupplierInterface, index : number) => (
-                                    <TableRow key={index}>
-                                        <TableCell> {item.ProductName }</TableCell>
-                                        <TableCell> {item.description}</TableCell>
-                                        <TableCell> {item.type}</TableCell>
-                                        <TableCell> {item.cost}</TableCell>
-                                        <TableCell> {item.quantity}</TableCell>
-                                        <TableCell> {item.totalCost}</TableCell>
-                                        <TableCell> {item.orderedDate}</TableCell>
-                                        <TableCell> {item.orderedReceived}</TableCell>
-                                        <TableCell> {item.expirydDate}</TableCell>
-                                        <TableCell> {item.supplierName}</TableCell>
-                                        <TableCell> {item.receivedBy}</TableCell>
-                                    </TableRow>
-                                ))
-                            }
+            <div className="flex w-full">
+                <div className=" w-[75%] ms-5 overflow-auto h-[600px] shadow-md rounded-md ">
+                    <Table>
+                        <TableCaption>A list of your recent invoices.</TableCaption>
+                        <TableHeader className="">
+                            <TableRow>
+                                <TableHead>medicine name</TableHead>
+                                <TableHead>description</TableHead>
+                                <TableHead>type</TableHead>
+                                <TableHead>cost per piece</TableHead>
+                                <TableHead>quantity</TableHead>
+                                <TableHead>total cost</TableHead>
+                                <TableHead>date ordered</TableHead>
+                                <TableHead>received</TableHead>
+                                <TableHead>expiry date</TableHead>
+                                <TableHead>supplier name</TableHead>
+                                <TableHead>received by</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
                         
-                    </TableBody>
-                </Table>
+                                {
+                                    supplier.map((item : getSupplierInterface, index : number) => (
+                                        <TableRow key={index}>
+                                            <TableCell> {item.ProductName }</TableCell>
+                                            <TableCell> {item.description}</TableCell>
+                                            <TableCell> {item.type}</TableCell>
+                                            <TableCell> {item.cost}</TableCell>
+                                            <TableCell> {item.quantity}</TableCell>
+                                            <TableCell> {item.totalCost}</TableCell>
+                                            <TableCell> {item.orderedDate}</TableCell>
+                                            <TableCell> {item.orderedReceived}</TableCell>
+                                            <TableCell> {item.expirydDate}</TableCell>
+                                            <TableCell> {item.supplierName}</TableCell>
+                                            <TableCell> {item.receivedBy}</TableCell>
+                                        </TableRow>
+                                    ))
+                                }
+                            
+                        </TableBody>
+                    </Table>
+                </div>
+
+                <div className=" w-[21%] ms-5 overflow-auto h-[600px] shadow-md rounded-md ">
+                    <PriorityTab />
+                </div>
+
             </div>
+
+          
 
            
         </div>
