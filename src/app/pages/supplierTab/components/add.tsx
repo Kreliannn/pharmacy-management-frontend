@@ -93,6 +93,21 @@ export function AddButton({ setSupplier } : { setSupplier : React.Dispatch<React
   })
 
   const handleSave = () => {
+    if (
+      ProductName.trim() === "" ||
+      description.trim() === "" ||
+      type.trim() === "" ||
+      cost.trim() === "" ||
+      quantity.trim() === "" ||
+      orderedDate.trim() === "" ||
+      orderedReceived.trim() === "" ||
+      expirydDate.trim() === "" ||
+      supplierName.trim() === "" ||
+      receivedBy.trim() === ""
+    ) {
+      errorAlert("Please fill in all required fields")
+      return
+    }
     const totalCost = Number(cost) * Number(quantity)
     const supplierData = {
       ProductName,

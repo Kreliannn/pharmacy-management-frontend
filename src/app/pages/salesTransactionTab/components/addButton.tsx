@@ -41,7 +41,7 @@ export function AddButton({ setTransaction } : { setTransaction : React.Dispatch
   const [customer, setCustomer] = useState("")
   const [cashier, setCashier] = useState("")
   const [price, setPrice] = useState(0)
-  const [totalPice, setTotalPrice] = useState(0)
+  
 
 
   const queryClient = useQueryClient();
@@ -87,6 +87,12 @@ export function AddButton({ setTransaction } : { setTransaction : React.Dispatch
 
   const handleSave = () => {
         if(!ProductName) return errorAlert("empty field")
+
+        if (ProductName.trim() === "" || quantity.trim() === "" || customer.trim() === "" || cashier.trim() === "" || price <= 0 ) {
+          return errorAlert("empty field")
+        }
+
+        
 
         const newTransaction : transactionInterface = {
             date : today,
@@ -143,7 +149,7 @@ export function AddButton({ setTransaction } : { setTransaction : React.Dispatch
                   <SelectItem value={"none"}>  none  </SelectItem>
                   {
                     product.filter(item => item.quantity > 0 && item.price !== 0).map((item : getProductInterface) => (
-                      <SelectItem value={item.productName} key={item.productName}> {item.productName} </SelectItem>
+                      <SelectItem value={item.productName} key={item.productName}> {item.productName} - ₱{item.price}  </SelectItem>
                     ))
                   }
                 </SelectGroup>

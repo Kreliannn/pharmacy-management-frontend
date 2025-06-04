@@ -32,10 +32,9 @@ import { useQuery } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query";
 
 
-export function EditButton({ setProduct , setValue } : { setValue : (c : number, h : number, o : number, s : number) => void, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
+export function EditButton({ setProduct , setValue } : { setValue : (c : number,  o : number, s : number) => void, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
   
   const [carryingCost, setCarryingCost] = useState("")
-  const [holdingCost, setHoldingCost] = useState("")
   const [orderingCost, setOrderingCost] = useState("")
   const [stockCost, setStockCost] = useState("")
 
@@ -61,8 +60,8 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
  
 
   const handleSave = () => {
-    if(!carryingCost || !holdingCost || !orderingCost || !stockCost) return errorAlert("empty field")
-    setValue(Number(carryingCost), Number(holdingCost), Number(orderingCost), Number(stockCost))
+    if(!carryingCost || !orderingCost || !stockCost) return errorAlert("empty field")
+    setValue(Number(carryingCost),  Number(orderingCost), Number(stockCost))
     successAlert("updated")
   }
 
@@ -82,7 +81,7 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
        
 
           <div>
-            <label className="block mb-1">Carrying Cost</label>
+            <label className="block mb-1">Carrying Cost and Holding Cost</label>
             <Input
               
               className="w-full"
@@ -93,16 +92,7 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
           </div>
 
        
-          <div>
-            <label className="block mb-1">holding cost</label>
-            <Input
-              
-              className="w-full"
-              placeholder="holding cost"
-              value={holdingCost}
-              onChange={(e) => setHoldingCost(e.target.value)}
-            />
-          </div>
+       
 
 
           <div>

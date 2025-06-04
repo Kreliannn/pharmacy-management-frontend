@@ -60,6 +60,8 @@ export function EditButton({ setProduct, product } : { product : getProductInter
   })
 
   const handleSave = () => {
+    if(!year2022 || !year2023 || !year2024) return errorAlert("empty field")
+      
     const data = {
         _id : product._id,
         year2022 : Number(year2022),

@@ -58,6 +58,7 @@ export function EditButton({ setProduct, product } : { product : getProductInter
   })
 
   const handleSave = () => {
+    if(!price || !category) return errorAlert("empty field")
     const data = {
         _id : product._id,
         price : Number(price),

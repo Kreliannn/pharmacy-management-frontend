@@ -28,7 +28,6 @@ export default function SupplierTab() {
     const [product, setProduct] = useState<getProductInterface[]>([])
 
     const [carryingCost, setCarryingCost] = useState(0)
-    const [holdingCost, setHoldingCost] = useState(0)
     const [orderingCost, setOrderingCost] = useState(0)
     const [stockCost, setStockCost] = useState(0)
 
@@ -40,9 +39,8 @@ export default function SupplierTab() {
         setProduct((prev) => prev.filter((item : getProductInterface) => item.productName == search ))
     }
 
-    const setValue = (c : number, h : number, o : number, s : number) => {
+    const setValue = (c : number,  o : number, s : number) => {
         setCarryingCost(c)
-        setHoldingCost(h)
         setOrderingCost(o)
         setStockCost(s)
     }
