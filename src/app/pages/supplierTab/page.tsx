@@ -18,10 +18,20 @@ import { getSupplierInterface } from "@/app/types/supplier.type"
 import { backendUrl } from "@/app/utils/url"
 import axios from "axios"
 import PriorityTab from "@/components/ui/priorityTab"
+import { getProductInterface } from "@/app/types/product.type"
+import { errorAlert } from "@/app/utils/alert"
+import { Input } from "@/components/ui/input"
 
 export default function SupplierTab() {
 
     const [supplier, setSupplier] = useState<getSupplierInterface[]>([])
+
+    const [search, setSearch] = useState("")
+
+    const handleSearch = () => {
+        if(!search) return errorAlert("empty field")
+            setSupplier((prev) => prev.filter((item : getSupplierInterface) => item.ProductName == search ))
+    }
 
     const { data } = useQuery({
         queryKey : ["supplier"],
@@ -41,14 +51,28 @@ export default function SupplierTab() {
 
             <Navbar />
 
-            <div className="m-auto w-5/6 h-[70px]rounded-md flex gap-5 mb-5 items-center">
-                <AddButton setSupplier={setSupplier} />
-            </div>
-
+            
             <div className="flex w-full">
                 <div className=" w-[75%] ms-5 overflow-auto h-[600px] shadow-md rounded-md ">
+
+
+
+
+                <div className="w-full h-[70px]rounded-md flex gap-10 items-center justify-between p-5">
+                    <div className="flex w-[250px] gap-2 ">
+                        <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
+                            const value = e.target.value
+                            setSearch(value)
+                            if(value == "") setSupplier(data?.data)
+                        }}/>
+                        <Button onClick={handleSearch}> Search </Button>
+                    </div>
+
+                    <AddButton setSupplier={setSupplier} />
+                </div>
+
                     <Table>
-                        <TableCaption>A list of your recent invoices.</TableCaption>
+                       
                         <TableHeader className="">
                             <TableRow>
                                 <TableHead>medicine name</TableHead>
@@ -70,7 +94,7 @@ export default function SupplierTab() {
                                     supplier.map((item : getSupplierInterface, index : number) => (
                                         <TableRow key={index}>
                                             <TableCell> {item.ProductName }</TableCell>
-                                            <TableCell> {item.description}</TableCell>
+                                            <TableCell className="max-w-[50px] overflow-hidden"> {item.description}</TableCell>
                                             <TableCell> {item.type}</TableCell>
                                             <TableCell> {item.cost}</TableCell>
                                             <TableCell> {item.quantity}</TableCell>

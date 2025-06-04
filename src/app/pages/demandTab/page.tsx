@@ -18,12 +18,13 @@ import { getProductInterface } from "@/app/types/product.type"
 import axios from "axios"   
 import { EditButton } from "./components/editButton"
 import { sampleStandardDeviation, classifyDemand } from "@/app/utils/customFunction"
-
-
+import { getProductItemSold } from "@/app/utils/customFunction"
+import { getTransactionInterface } from "@/app/types/transaction.type"
 
 export default function SupplierTab() {
 
     const [product, setProduct] = useState<getProductInterface[]>([])
+    const [transaction, setTransaction] = useState<getTransactionInterface[]>([])
 
     const { data } = useQuery({
         queryKey : ["product"],
@@ -37,18 +38,28 @@ export default function SupplierTab() {
         }
     }, [data])
 
+
+    const { data : transactionData} = useQuery({
+        queryKey : ["transaction"],
+        queryFn : () => axios.get(backendUrl("transaction"))
+    })
+
+    useEffect(() => {
+        if(transactionData?.data)
+        {
+            setTransaction(transactionData?.data)
+        }
+    }, [transactionData])
+
     return (
         <div className=" w-full h-dvh overflow-auto"> 
 
             <Navbar />
 
-            <div className="m-auto w-5/6 h-[70px] shadow-md rounded-md flex gap-5 mb-5 items-center">
-               
-            </div>
-
+          
             <div className="m-auto w-5/6 h-[600px] shadow-md rounded-md ">
                 <Table>
-                    <TableCaption>A list of your recent invoices.</TableCaption>
+                   
                     <TableHeader>
                         <TableRow>
                             <TableHead>name of medecine</TableHead>
@@ -70,6 +81,7 @@ export default function SupplierTab() {
                                     const cv = stdev / averageDemand
                                     const demandVariability = classifyDemand(cv)
                                       
+                                    const year2025 = getProductItemSold(item.productName, transaction)
                             
                                     
                                     return(
@@ -78,7 +90,7 @@ export default function SupplierTab() {
                                             <TableCell> {item.year2022}</TableCell>
                                             <TableCell> {item.year2023}</TableCell>
                                             <TableCell> {item.year2024}</TableCell>
-                                            <TableCell> {"null"}</TableCell>
+                                            <TableCell> {year2025}</TableCell>
                                             <TableCell> {averageDemand.toFixed(0)}</TableCell>
                                             <TableCell> {demandVariability}</TableCell>
                                             <TableCell> 

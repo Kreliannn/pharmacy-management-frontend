@@ -49,21 +49,22 @@ export default function SupplierTab() {
 
             <Navbar />
 
-            <div className=" w-full h-[70px]  rounded-md flex gap-5 mb-5 items-center">
-
-                <div className="flex w-[250px] gap-2 ms-5">
-                    <Input type={"text"} value={search} onChange={(e) => {
-                        const value = e.target.value
-                        setSearch(value)
-                        if(value == "") setProduct(data?.data)
-                    }}/>
-                    <Button onClick={handleSearch}> Search </Button>
-                </div>
-                
-            </div>
+          
 
             <div className="w-full flex">
                 <div className="ms-5 w-[60%] h-[600px] shadow-md rounded-md overflow-auto">
+                <div className=" w-full h-[70px]  rounded-md flex gap-5 mb-5 items-center">
+
+                    <div className="flex w-[250px] gap-2 ms-5">
+                        <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
+                            const value = e.target.value
+                            setSearch(value)
+                            if(value == "") setProduct(data?.data)
+                        }}/>
+                        <Button onClick={handleSearch}> Search </Button>
+                    </div>
+
+                    </div>
                     <Table>
                         
                         <TableHeader>
@@ -84,7 +85,7 @@ export default function SupplierTab() {
                                     product.map((item : getProductInterface, index : number) => (
                                         <TableRow key={index}>
                                             <TableCell> {item.productName }</TableCell>
-                                            <TableCell> {item.description}</TableCell>
+                                            <TableCell className="max-w-[50px] overflow-hidden">  {item.description}</TableCell>
                                             <TableCell> {item.type}</TableCell>
                                             <TableCell> {item.category}</TableCell>
                                             <TableCell> {item.cost}</TableCell>

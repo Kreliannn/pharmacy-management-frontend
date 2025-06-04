@@ -32,11 +32,12 @@ import { useQuery } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query";
 
 
-export function EditButton({ setProduct , setValue } : { setValue : (c : number, h : number) => void, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
+export function EditButton({ setProduct , setValue } : { setValue : (c : number, h : number, o : number, s : number) => void, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
   
   const [carryingCost, setCarryingCost] = useState("")
   const [holdingCost, setHoldingCost] = useState("")
-  
+  const [orderingCost, setOrderingCost] = useState("")
+  const [stockCost, setStockCost] = useState("")
 
 
     const clearFormFields = () => {
@@ -60,8 +61,8 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
  
 
   const handleSave = () => {
-    if(!carryingCost || !holdingCost) return errorAlert("empty field")
-    setValue(Number(carryingCost), Number(holdingCost))
+    if(!carryingCost || !holdingCost || !orderingCost || !stockCost) return errorAlert("empty field")
+    setValue(Number(carryingCost), Number(holdingCost), Number(orderingCost), Number(stockCost))
     successAlert("updated")
   }
 
@@ -69,7 +70,7 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Edit</Button>
+        <Button >Edit</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -93,13 +94,36 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
 
        
           <div>
-            <label className="block mb-1">year 2023</label>
+            <label className="block mb-1">holding cost</label>
             <Input
               
               className="w-full"
-              placeholder="year 2023"
+              placeholder="holding cost"
               value={holdingCost}
               onChange={(e) => setHoldingCost(e.target.value)}
+            />
+          </div>
+
+
+          <div>
+            <label className="block mb-1">ordering cost</label>
+            <Input
+              
+              className="w-full"
+              placeholder="ordering cost"
+              value={orderingCost}
+              onChange={(e) => setOrderingCost(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1">stock cost</label>
+            <Input
+              
+              className="w-full"
+              placeholder="stock cost"
+              value={stockCost}
+              onChange={(e) => setStockCost(e.target.value)}
             />
           </div>
 

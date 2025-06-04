@@ -44,6 +44,7 @@ export function AddButton({ setTransaction } : { setTransaction : React.Dispatch
   const [totalPice, setTotalPrice] = useState(0)
 
 
+  const queryClient = useQueryClient();
 
   const [product, setProduct] = useState<getProductInterface[]>([])
 
@@ -77,6 +78,7 @@ export function AddButton({ setTransaction } : { setTransaction : React.Dispatch
       successAlert("data created")
       setTransaction(res.data)
       clearFormFields()
+      queryClient.invalidateQueries({ queryKey: ["product"] });
     },
     onError : (err) => {
       errorAlert("error")
@@ -119,7 +121,7 @@ export function AddButton({ setTransaction } : { setTransaction : React.Dispatch
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button > Add </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

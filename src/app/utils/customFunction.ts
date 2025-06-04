@@ -1,4 +1,20 @@
+import axios from "axios";
+import { backendUrl } from "./url";
+import { getTransactionInterface } from "../types/transaction.type";
 
+export const getProductItemSold =  (productName : string, data : getTransactionInterface[]) =>
+{
+  let itemSold = 0
+  const transaction = data
+  const filteredTransaction = transaction.filter((item) => item.productName == productName)
+  filteredTransaction.forEach((item) => {
+    if(item.productName == productName)
+    {
+      itemSold += item.quantity
+    }
+  })
+  return itemSold
+}
 
 export function sampleStandardDeviation(year2022 : number, year2023 : number, year2024 : number) {
     const values = [year2022, year2023, year2024];

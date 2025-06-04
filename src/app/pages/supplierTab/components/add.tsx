@@ -138,7 +138,7 @@ export function AddButton({ setSupplier } : { setSupplier : React.Dispatch<React
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button >New</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

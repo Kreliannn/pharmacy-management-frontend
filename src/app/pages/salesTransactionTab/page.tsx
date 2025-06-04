@@ -18,10 +18,22 @@ import { getTransactionInterface } from "@/app/types/transaction.type"
 import { backendUrl } from "@/app/utils/url"
 import axios from "axios"
 import PriorityTab from "@/components/ui/priorityTab"
+import { Input } from "@/components/ui/input"
+import { errorAlert } from "@/app/utils/alert"
+import { getProductItemSold } from "@/app/utils/customFunction"
 
 export default function SupplierTab() {
 
     const [transaction, setTransaction] = useState<getTransactionInterface[]>([])
+
+
+    const [search, setSearch] = useState("")
+
+    const handleSearch = () => {
+        if(!search) return errorAlert("empty field")
+            setTransaction((prev) => prev.filter((item : getTransactionInterface) => item.productName == search ))
+    }
+
 
     const { data } = useQuery({
         queryKey : ["transaction"],
@@ -41,14 +53,25 @@ export default function SupplierTab() {
 
             <Navbar />
 
-            <div className="m-auto w-5/6 h-[70px] rounded-md flex gap-5 mb-5 items-center">
-                <AddButton setTransaction={setTransaction} />
-            </div>
+      
 
             <div className="flex w-full">
                 <div className="ms-5 w-[70%] overflow-auto h-[600px] shadow-md rounded-md ">
+
+                <div className="w-full h-[70px] rounded-md flex gap-10  items-center justify-between p-5">
+                    <div className="flex w-[250px] gap-2 ">
+                        <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
+                            const value = e.target.value
+                            setSearch(value)
+                            if(value == "") setTransaction(data?.data)
+                        }}/>
+                        <Button onClick={handleSearch}> Search </Button>
+                    </div>
+                    <AddButton setTransaction={setTransaction} />
+                </div>
+
                     <Table>
-                        <TableCaption>A list of your recent invoices.</TableCaption>
+                        
                         <TableHeader className="">
                             <TableRow>
                                 <TableHead>date</TableHead>

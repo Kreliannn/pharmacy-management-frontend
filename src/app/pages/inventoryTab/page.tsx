@@ -20,17 +20,31 @@ import { EditButton } from "./components/editButton"
 import { sampleStandardDeviation, classifyDemand, calculateSafetyStock } from "@/app/utils/customFunction"
 import StatusBadge from "./components/status"
 import PriorityTab from "@/components/ui/priorityTab"
+import { errorAlert } from "@/app/utils/alert"
+import { Input } from "@/components/ui/input"
 
 export default function SupplierTab() {
 
     const [product, setProduct] = useState<getProductInterface[]>([])
 
-    const [carryingCost, setCarryingCost] = useState(100)
-    const [holdingCost, setHoldingCost] = useState(100)
+    const [carryingCost, setCarryingCost] = useState(0)
+    const [holdingCost, setHoldingCost] = useState(0)
+    const [orderingCost, setOrderingCost] = useState(0)
+    const [stockCost, setStockCost] = useState(0)
 
-    const setValue = (c : number, h : number) => {
+
+    const [search, setSearch] = useState("")
+
+    const handleSearch = () => {
+        if(!search) return errorAlert("empty field")
+        setProduct((prev) => prev.filter((item : getProductInterface) => item.productName == search ))
+    }
+
+    const setValue = (c : number, h : number, o : number, s : number) => {
         setCarryingCost(c)
         setHoldingCost(h)
+        setOrderingCost(o)
+        setStockCost(s)
     }
 
     const { data } = useQuery({
@@ -50,14 +64,26 @@ export default function SupplierTab() {
 
             <Navbar />
 
-            <div className="m-auto w-5/6 h-[70px] shadow-md rounded-md flex gap-5 mb-5 items-center">
-               <EditButton  setProduct={setProduct} setValue={setValue} />
-            </div>
-
+            
             <div className="flex w-full">
                 <div className="ms-5 w-[70%] overflow-auto h-[600px] shadow-md rounded-md ">
+
+
+                    <div className="w-full h-[70px]  rounded-md flex gap-10 items-center justify-between p-5">
+                        <div className="flex w-[250px] gap-2 ">
+                            <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
+                                const value = e.target.value
+                                setSearch(value)
+                                if(value == "") setProduct(data?.data)
+                            }}/>
+                            <Button onClick={handleSearch}> Search </Button>
+                        </div>
+
+                        <EditButton  setProduct={setProduct} setValue={setValue} />
+                    </div>
+
                     <Table>
-                        <TableCaption>A list of your recent invoices.</TableCaption>
+            
                         <TableHeader>
                             <TableRow>
                                 <TableHead>name of medecine</TableHead>
@@ -95,11 +121,11 @@ export default function SupplierTab() {
 
                                         if(demandVariability == "Highly Variable")
                                         {
-                                            orderQuantity = (2 * averageDemand * item.cost ) / carryingCost 
+                                            orderQuantity = Math.sqrt((2 * 14 * orderingCost) / stockCost);
                                         }
                                         else
                                         {
-
+                                            orderQuantity = (2 * averageDemand * orderingCost ) / carryingCost 
                                         }
                                         
                                         
@@ -115,7 +141,7 @@ export default function SupplierTab() {
                                                 </TableCell>
                                                 <TableCell> {reorderPoint.toFixed(0)}</TableCell>
                                                 <TableCell> {safetyStock.toFixed(0)}</TableCell>
-                                                <TableCell> {carryingCost}</TableCell>
+                                                <TableCell> {orderQuantity.toFixed(0)}</TableCell>
                                             </TableRow>
                                         )
                                     })
