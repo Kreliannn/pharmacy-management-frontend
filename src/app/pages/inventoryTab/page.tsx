@@ -115,18 +115,7 @@ export default function SupplierTab() {
                                         else if (item.quantity >= reorderPoint) status = "Sufficient"
                                         else status = "Reorder"
 
-                                        let orderQuantity 
-
-                                        if(demandVariability == "Highly Variable")
-                                        {
-                                            orderQuantity = Math.sqrt((2 * 14 * orderingCost) / stockCost);
-                                        }
-                                        else
-                                        {
-                                            orderQuantity = (2 * averageDemand * orderingCost ) / carryingCost 
-                                        }
-                                        
-                                        
+                                        let orderQuantity = Math.sqrt((2 * averageDemand * carryingCost) / carryingCost);
 
                                         return(
                                             <TableRow key={index}>

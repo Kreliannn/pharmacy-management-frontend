@@ -30,7 +30,7 @@ import { successAlert , errorAlert} from "@/app/utils/alert"
 import { getProductInterface } from "@/app/types/product.type"
 import { useQuery } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query";
-
+import { confirmAlert } from "@/app/utils/alert"
 
 export function EditButton({ setProduct, product } : { product : getProductInterface, setProduct : React.Dispatch<React.SetStateAction<getProductInterface[]>> }) {
   
@@ -56,6 +56,25 @@ export function EditButton({ setProduct, product } : { product : getProductInter
       errorAlert("error")
     }
   })
+
+
+  const deleteMutation = useMutation({
+    mutationFn : (id :  string ) => axios.delete(backendUrl(`product/${id}`)),
+    onSuccess : (res : { data : getProductInterface[]}) => {
+      successAlert("data updated")
+      setProduct(res.data)
+      clearFormFields()
+    },
+    onError : (err) => {
+      errorAlert("error")
+    }
+  })
+
+  const handleDelete = () => {
+    confirmAlert("delete Product?", "delete permantly", () => {
+        deleteMutation.mutate(product._id)
+    })
+  }
 
   const handleSave = () => {
     if(!price || !category) return errorAlert("empty field")
@@ -103,6 +122,10 @@ export function EditButton({ setProduct, product } : { product : getProductInter
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             />
+          </div>
+
+          <div>
+            <Button className="w-full" variant={"destructive"} onClick={handleDelete}> Delete Product </Button>
           </div>
 
           

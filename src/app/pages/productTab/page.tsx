@@ -73,7 +73,7 @@ export default function SupplierTab() {
                                 <TableHead>description</TableHead>
                                 <TableHead>type</TableHead>
                                 <TableHead>category</TableHead>
-                                <TableHead>cost</TableHead>
+                               
                                 <TableHead>price</TableHead>
                                 <TableHead>quantity</TableHead>
                                 <TableHead>Edit</TableHead>
@@ -88,8 +88,8 @@ export default function SupplierTab() {
                                             <TableCell className="max-w-[50px] overflow-hidden">  {item.description}</TableCell>
                                             <TableCell> {item.type}</TableCell>
                                             <TableCell> {item.category}</TableCell>
-                                            <TableCell> {item.cost}</TableCell>
-                                            <TableCell> {item.price}</TableCell>
+                                            
+                                            <TableCell>  <span className="text-green-500"> ₱{item.price} </span></TableCell>
                                             <TableCell> {item.quantity}</TableCell>
                                             <TableCell> 
                                                 <EditButton setProduct={setProduct} product={item} />
