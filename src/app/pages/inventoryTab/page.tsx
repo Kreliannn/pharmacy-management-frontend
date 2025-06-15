@@ -26,18 +26,13 @@ import { Input } from "@/components/ui/input"
 export default function SupplierTab() {
 
     const [product, setProduct] = useState<getProductInterface[]>([])
+    const [filteredProduct, setFilteredProduct] = useState<getProductInterface[]>([])
 
     const [carryingCost, setCarryingCost] = useState(0)
     const [orderingCost, setOrderingCost] = useState(0)
     const [stockCost, setStockCost] = useState(0)
 
-
     const [search, setSearch] = useState("")
-
-    const handleSearch = () => {
-        if(!search) return errorAlert("empty field")
-        setProduct((prev) => prev.filter((item : getProductInterface) => item.productName == search ))
-    }
 
     const setValue = (c : number,  o : number, s : number) => {
         setCarryingCost(c)
@@ -54,8 +49,21 @@ export default function SupplierTab() {
         if(data?.data)
         {
             setProduct(data?.data)
+            setFilteredProduct(data?.data)
         }
     }, [data])
+
+    // Real-time search filter
+    useEffect(() => {
+        if (!search.trim()) {
+            setFilteredProduct(product)
+        } else {
+            const filtered = product.filter((item: getProductInterface) => 
+                item.productName.toLowerCase().includes(search.toLowerCase())
+            )
+            setFilteredProduct(filtered)
+        }
+    }, [search, product])
 
     return (
         <div className=" w-full h-dvh overflow-auto"> 
@@ -69,12 +77,12 @@ export default function SupplierTab() {
 
                     <div className="w-full h-[70px]  rounded-md flex gap-10 items-center justify-between p-5">
                         <div className="flex w-[250px] gap-2 ">
-                            <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
-                                const value = e.target.value
-                                setSearch(value)
-                                if(value == "") setProduct(data?.data)
-                            }}/>
-                            <Button onClick={handleSearch}> Search </Button>
+                            <Input 
+                                type={"text"} 
+                                value={search} 
+                                placeholder="enter medicine name" 
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
                         </div>
 
                         <EditButton  setProduct={setProduct} setValue={setValue} />
@@ -84,7 +92,7 @@ export default function SupplierTab() {
             
                         <TableHeader>
                             <TableRow>
-                                <TableHead>name of medecine</TableHead>
+                                <TableHead>name of medicine</TableHead>
                                 <TableHead>type</TableHead>
                                 <TableHead>demand variability</TableHead>
                                 <TableHead>status</TableHead>
@@ -100,7 +108,7 @@ export default function SupplierTab() {
                         <TableBody>
                             
                             {
-                                    product.map((item : getProductInterface, index : number) => {
+                                    filteredProduct.map((item : getProductInterface, index : number) => {
                                         const averageDemand = (item.year2022 + item.year2023 + item.year2024) / 3
                                         const stdev = sampleStandardDeviation(item.year2022 , item.year2023 , item.year2024)
                                         const cv = stdev / averageDemand

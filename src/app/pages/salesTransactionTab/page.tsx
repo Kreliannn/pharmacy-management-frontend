@@ -25,15 +25,9 @@ import { getProductItemSold } from "@/app/utils/customFunction"
 export default function SupplierTab() {
 
     const [transaction, setTransaction] = useState<getTransactionInterface[]>([])
-
+    const [filteredTransaction, setFilteredTransaction] = useState<getTransactionInterface[]>([])
 
     const [search, setSearch] = useState("")
-
-    const handleSearch = () => {
-        if(!search) return errorAlert("empty field")
-            setTransaction((prev) => prev.filter((item : getTransactionInterface) => item.productName == search ))
-    }
-
 
     const { data } = useQuery({
         queryKey : ["transaction"],
@@ -44,9 +38,21 @@ export default function SupplierTab() {
         if(data?.data)
         {
             setTransaction(data?.data)
+            setFilteredTransaction(data?.data)
         }
     }, [data])
 
+    // Real-time search filter
+    useEffect(() => {
+        if (!search.trim()) {
+            setFilteredTransaction(transaction)
+        } else {
+            const filtered = transaction.filter((item: getTransactionInterface) => 
+                item.productName.toLowerCase().includes(search.toLowerCase())
+            )
+            setFilteredTransaction(filtered)
+        }
+    }, [search, transaction])
 
     return (
         <div className=" w-full h-dvh overflow-auto"> 
@@ -60,12 +66,12 @@ export default function SupplierTab() {
 
                 <div className="w-full h-[70px] rounded-md flex gap-10  items-center justify-between p-5">
                     <div className="flex w-[250px] gap-2 ">
-                        <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
-                            const value = e.target.value
-                            setSearch(value)
-                            if(value == "") setTransaction(data?.data)
-                        }}/>
-                        <Button onClick={handleSearch}> Search </Button>
+                        <Input 
+                            type={"text"} 
+                            value={search} 
+                            placeholder="enter medicine name" 
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
                     <AddButton setTransaction={setTransaction} />
                 </div>
@@ -76,7 +82,7 @@ export default function SupplierTab() {
                             <TableRow>
                                 <TableHead>date</TableHead>
                                 <TableHead>customer</TableHead>
-                                <TableHead>medecine</TableHead>
+                                <TableHead>medicine</TableHead>
                                 <TableHead>price</TableHead>
                                 <TableHead>quantity sold</TableHead>
                                 <TableHead>total</TableHead>
@@ -86,7 +92,7 @@ export default function SupplierTab() {
                         <TableBody>
                         
                                 {
-                                    transaction.map((item : getTransactionInterface, index : number) => (
+                                    filteredTransaction.map((item : getTransactionInterface, index : number) => (
                                         <TableRow key={index}>
                                             <TableCell> {item.date }</TableCell>
                                             <TableCell> {item.customer}</TableCell>
