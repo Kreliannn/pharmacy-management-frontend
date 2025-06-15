@@ -65,7 +65,7 @@ export default function PriorityTab() {
 
                                         let status
 
-                                        if (item.quantity <= safetyStock) status = "Reorder req'd"
+                                        if (item.quantity <= safetyStock) status = "Reorder"
                                         else if (item.quantity >= reorderPoint) status = "Sufficient"
                                         else status = "Reorder"
 
@@ -110,7 +110,7 @@ export default function PriorityTab() {
           break;
   
           case "Reorder":
-              display = "bg-orange-500 text-white font-bold shadow-lg"
+              display = "bg-red-500 text-white font-bold shadow-lg"
           break;
       }
   

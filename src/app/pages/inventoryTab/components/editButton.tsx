@@ -106,17 +106,7 @@ export function EditButton({ setProduct , setValue } : { setValue : (c : number,
             />
           </div>
 
-          <div>
-            <label className="block mb-1">stock cost</label>
-            <Input
-              
-              className="w-full"
-              placeholder="stock cost"
-              value={stockCost}
-              onChange={(e) => setStockCost(e.target.value)}
-            />
-          </div>
-
+   
           
         </div>
 

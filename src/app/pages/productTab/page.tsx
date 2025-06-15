@@ -20,6 +20,8 @@ import { EditButton } from "./components/editButton"
 import PriorityTab from "@/components/ui/priorityTab"
 import { Input } from "@/components/ui/input"
 import { errorAlert } from "@/app/utils/alert"
+import { Badge } from "@/components/ui/badge"
+import { sampleStandardDeviation, classifyDemand, calculateSafetyStock } from "@/app/utils/customFunction"
 
 export default function SupplierTab() {
 
@@ -75,27 +77,44 @@ export default function SupplierTab() {
                                 <TableHead>category</TableHead>
                                
                                 <TableHead>price</TableHead>
-                                <TableHead>quantity</TableHead>
+                                <TableHead>quantity on hand</TableHead>
                                 <TableHead>Edit</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             
                             {
-                                    product.map((item : getProductInterface, index : number) => (
-                                        <TableRow key={index}>
-                                            <TableCell> {item.productName }</TableCell>
-                                            <TableCell className="max-w-[50px] overflow-hidden">  {item.description}</TableCell>
-                                            <TableCell> {item.type}</TableCell>
-                                            <TableCell> {item.category}</TableCell>
-                                            
-                                            <TableCell>  <span className="text-green-500"> ₱{item.price} </span></TableCell>
-                                            <TableCell> {item.quantity}</TableCell>
-                                            <TableCell> 
-                                                <EditButton setProduct={setProduct} product={item} />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                    product.map((item : getProductInterface, index : number) => {
+                                        const averageDemand = (item.year2022 + item.year2023 + item.year2024) / 3
+                                        const stdev = sampleStandardDeviation(item.year2022 , item.year2023 , item.year2024)
+                                        const cv = stdev / averageDemand
+                                        const demandVariability = classifyDemand(cv)
+                                        const safetyStock = calculateSafetyStock(stdev)
+
+                                        const dailyDemand = averageDemand / 365
+
+                                        const reorderPoint = dailyDemand * 14 + safetyStock
+
+                                        let status
+
+                                        if (item.quantity <= safetyStock) status = "Reorder"
+                                        else if (item.quantity >= reorderPoint) status = "Sufficient"
+                                        else status = "Reorder"
+                                        return(
+                                            <TableRow key={index}>
+                                                <TableCell> {item.productName }</TableCell>
+                                                <TableCell className="max-w-[50px] overflow-hidden">  {item.description}</TableCell>
+                                                <TableCell> {item.type}</TableCell>
+                                                <TableCell> {item.category}</TableCell>
+                                                
+                                                <TableCell>  <span className="text-green-500"> ₱{item.price} </span></TableCell>
+                                                <TableCell> {<StatusBadge status={status}  qty={item.quantity}/> }</TableCell>
+                                                <TableCell> 
+                                                    <EditButton setProduct={setProduct} product={item} />
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })
                                 }
 
 
@@ -115,3 +134,28 @@ export default function SupplierTab() {
         </div>
     )
   }
+
+
+  
+  export  function StatusBadge ( { status, qty } : { status : string, qty : number } ) {
+      let display
+      switch(status)
+      {
+          case "Reorder req'd":
+              display = "bg-red-500 text-white font-bold shadow-lg"
+          break;
+  
+          case "Sufficient":
+              display = "bg-blue-500 text-white font-bold shadow-lg"
+          break;
+  
+          case "Reorder":
+              display = "bg-red-500 text-white font-bold shadow-lg"
+          break;
+      }
+  
+  
+  
+      return <Badge className={display} >{qty}</Badge>
+  
+  } 

@@ -16,7 +16,7 @@ export default function StatusBadge ( { status } : { status : string } ) {
         break;
 
         case "Reorder":
-            display = "bg-orange-500 text-white font-bold shadow-lg"
+            display = "bg-red-500 text-white font-bold shadow-lg"
         break;
     }
 

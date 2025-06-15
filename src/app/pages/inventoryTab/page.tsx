@@ -86,9 +86,11 @@ export default function SupplierTab() {
                             <TableRow>
                                 <TableHead>name of medecine</TableHead>
                                 <TableHead>type</TableHead>
-                                <TableHead>remaining quantity</TableHead>
                                 <TableHead>demand variability</TableHead>
                                 <TableHead>status</TableHead>
+                                <TableHead>remaining quantity</TableHead>
+                               
+                               
                                 <TableHead>reorder point</TableHead>
                                 <TableHead>safety stock</TableHead>
                                 <TableHead>order quantity</TableHead>
@@ -111,7 +113,7 @@ export default function SupplierTab() {
 
                                         let status
 
-                                        if (item.quantity <= safetyStock) status = "Reorder req'd"
+                                        if (item.quantity <= safetyStock) status = "Reorder"
                                         else if (item.quantity >= reorderPoint) status = "Sufficient"
                                         else status = "Reorder"
 
@@ -121,11 +123,13 @@ export default function SupplierTab() {
                                             <TableRow key={index}>
                                                 <TableCell> {item.productName }</TableCell>
                                                 <TableCell> {item.type}</TableCell>
-                                                <TableCell> {item.quantity}</TableCell>
                                                 <TableCell> {demandVariability}</TableCell>
                                                 <TableCell>     
                                                     <StatusBadge status={status} />
                                                 </TableCell>
+                                                <TableCell> {item.quantity}</TableCell>
+                                               
+                                               
                                                 <TableCell> {reorderPoint.toFixed(0)}</TableCell>
                                                 <TableCell> {safetyStock.toFixed(0)}</TableCell>
                                                 <TableCell> {orderQuantity.toFixed(0)}</TableCell>
