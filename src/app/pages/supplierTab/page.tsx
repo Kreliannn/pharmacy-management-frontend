@@ -25,13 +25,8 @@ import { Input } from "@/components/ui/input"
 export default function SupplierTab() {
 
     const [supplier, setSupplier] = useState<getSupplierInterface[]>([])
-
+    const [filteredSupplier, setFilteredSupplier] = useState<getSupplierInterface[]>([])
     const [search, setSearch] = useState("")
-
-    const handleSearch = () => {
-        if(!search) return errorAlert("empty field")
-            setSupplier((prev) => prev.filter((item : getSupplierInterface) => item.ProductName == search ))
-    }
 
     const { data } = useQuery({
         queryKey : ["supplier"],
@@ -42,9 +37,21 @@ export default function SupplierTab() {
         if(data?.data)
         {
             setSupplier(data?.data)
+            setFilteredSupplier(data?.data)
         }
     }, [data])
 
+    // Real-time search filter
+    useEffect(() => {
+        if (!search.trim()) {
+            setFilteredSupplier(supplier)
+        } else {
+            const filtered = supplier.filter((item: getSupplierInterface) => 
+                item.ProductName.toLowerCase().includes(search.toLowerCase())
+            )
+            setFilteredSupplier(filtered)
+        }
+    }, [search, supplier])
 
     return (
         <div className=" w-full h-dvh overflow-auto"> 
@@ -60,12 +67,12 @@ export default function SupplierTab() {
 
                 <div className="w-full h-[70px]rounded-md flex gap-10 items-center justify-between p-5">
                     <div className="flex w-[250px] gap-2 ">
-                        <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
-                            const value = e.target.value
-                            setSearch(value)
-                            if(value == "") setSupplier(data?.data)
-                        }}/>
-                        <Button onClick={handleSearch}> Search </Button>
+                        <Input 
+                            type={"text"} 
+                            value={search} 
+                            placeholder="enter medicine name" 
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
 
                     <AddButton setSupplier={setSupplier} />
@@ -91,7 +98,7 @@ export default function SupplierTab() {
                         <TableBody>
                         
                                 {
-                                    supplier.map((item : getSupplierInterface, index : number) => (
+                                    filteredSupplier.map((item : getSupplierInterface, index : number) => (
                                         <TableRow key={index}>
                                             <TableCell> {item.ProductName }</TableCell>
                                             <TableCell className="max-w-[50px] overflow-hidden"> {item.description}</TableCell>

@@ -26,13 +26,8 @@ import { sampleStandardDeviation, classifyDemand, calculateSafetyStock } from "@
 export default function SupplierTab() {
 
     const [product, setProduct] = useState<getProductInterface[]>([])
-
+    const [filteredProduct, setFilteredProduct] = useState<getProductInterface[]>([])
     const [search, setSearch] = useState("")
-
-    const handleSearch = () => {
-        if(!search) return errorAlert("empty field")
-        setProduct((prev) => prev.filter((item : getProductInterface) => item.productName == search ))
-    }
 
     const { data } = useQuery({
         queryKey : ["product"],
@@ -43,8 +38,21 @@ export default function SupplierTab() {
         if(data?.data)
         {
             setProduct(data?.data)
+            setFilteredProduct(data?.data)
         }
     }, [data])
+
+    // Real-time search filter
+    useEffect(() => {
+        if (!search.trim()) {
+            setFilteredProduct(product)
+        } else {
+            const filtered = product.filter((item: getProductInterface) => 
+                item.productName.toLowerCase().includes(search.toLowerCase())
+            )
+            setFilteredProduct(filtered)
+        }
+    }, [search, product])
 
     return (
         <div className=" w-full h-dvh overflow-auto"> 
@@ -58,12 +66,12 @@ export default function SupplierTab() {
                 <div className=" w-full h-[70px]  rounded-md flex gap-5 mb-5 items-center">
 
                     <div className="flex w-[250px] gap-2 ms-5">
-                        <Input type={"text"} value={search} placeholder="enter medecine name" onChange={(e) => {
-                            const value = e.target.value
-                            setSearch(value)
-                            if(value == "") setProduct(data?.data)
-                        }}/>
-                        <Button onClick={handleSearch}> Search </Button>
+                        <Input 
+                            type={"text"} 
+                            value={search} 
+                            placeholder="enter medicine name" 
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
 
                     </div>
@@ -84,7 +92,7 @@ export default function SupplierTab() {
                         <TableBody>
                             
                             {
-                                    product.map((item : getProductInterface, index : number) => {
+                                    filteredProduct.map((item : getProductInterface, index : number) => {
                                         const averageDemand = (item.year2022 + item.year2023 + item.year2024) / 3
                                         const stdev = sampleStandardDeviation(item.year2022 , item.year2023 , item.year2024)
                                         const cv = stdev / averageDemand
@@ -158,4 +166,4 @@ export default function SupplierTab() {
   
       return <Badge className={display} >{qty}</Badge>
   
-  } 
+  }
