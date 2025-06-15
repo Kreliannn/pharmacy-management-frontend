@@ -267,10 +267,10 @@ export function AddButton({ setSupplier } : { setSupplier : React.Dispatch<React
           </div>
 
           <div>
-            <label className="block mb-1">Supplier Name</label>
+            <label className="block mb-1">Recieved From</label>
             <Input
               className="w-full"
-              placeholder="Supplier Name"
+              placeholder="Recieved From"
               value={supplierName}
               onChange={(e) => setSupplierName(e.target.value)}
             />
