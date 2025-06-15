@@ -84,7 +84,7 @@ export default function SupplierTab() {
                                 <TableHead>date ordered</TableHead>
                                 <TableHead>received</TableHead>
                                 <TableHead>expiry date</TableHead>
-                                <TableHead>supplier name</TableHead>
+                                <TableHead>received from</TableHead>
                                 <TableHead>received by</TableHead>
                             </TableRow>
                         </TableHeader>
